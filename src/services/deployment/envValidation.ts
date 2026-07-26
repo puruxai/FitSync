@@ -17,7 +17,12 @@ export const EnvironmentValidationService = {
     );
 
     if (missing.length > 0) {
-      console.warn(`[Deployment Monitor] Missing optional credentials: ${missing.join(', ')}. FitSync is running in offline demo mode.`);
+      const isProd = import.meta.env.PROD;
+      const msg = `[Deployment Monitor] Missing required credentials: ${missing.join(', ')}.`;
+      console.warn(msg);
+      if (isProd) {
+        throw new Error(msg);
+      }
       return false;
     }
 
