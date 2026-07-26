@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  # Development container
+  fitsync-dev:
+    image: node:20-alpine
+    container_name: fitsync-dev
+    working_dir: /app
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    environment:
+      - NODE_ENV=development
+    command: npm run dev -- --host
+
+  # Production container served with Nginx
+  fitsync-prod:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fitsync-prod
+    ports:
+      - "8080:80"
+    environment:
+      - NODE_ENV=production
+    restart: always

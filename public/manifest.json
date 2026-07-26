@@ -1,0 +1,38 @@
+{
+  "name": "FitSync Enterprise Fitness Platform",
+  "short_name": "FitSync",
+  "description": "Enterprise-grade real-time fitness trackers, AI coach guides, and challenges dashboard",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#4f46e5",
+  "orientation": "portrait-primary",
+  "categories": ["fitness", "sports", "health"],
+  "icons": [
+    {
+      "src": "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=192&h=192&fit=crop",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=512&h=512&fit=crop",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "url": "/dashboard",
+      "icons": [{ "src": "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=96&h=96", "sizes": "96x96" }]
+    },
+    {
+      "name": "AI Coach",
+      "short_name": "AI Coach",
+      "url": "/ai",
+      "icons": [{ "src": "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=96&h=96", "sizes": "96x96" }]
+    }
+  ]
+}

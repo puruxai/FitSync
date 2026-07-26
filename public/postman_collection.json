@@ -1,0 +1,67 @@
+{
+  "info": {
+    "name": "FitSync API Collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Pre-configured sample queries for auth verification and steps biometrics uploads."
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Login Session Request",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"alex.rivera@fitsync.com\",\n  \"password\": \"SecurePass123\"\n}"
+            },
+            "url": {
+              "raw": "https://api.fitsync.com/v1/auth/login",
+              "protocol": "https",
+              "host": ["api", "fitsync", "com"],
+              "path": ["v1", "auth", "login"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Fitness Metrics",
+      "item": [
+        {
+          "name": "Log Steps Count Daily",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "tx-12345-67890"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"steps\": 8500,\n  \"caloriesBurned\": 340.5\n}"
+            },
+            "url": {
+              "raw": "https://api.fitsync.com/v1/fitness/steps",
+              "protocol": "https",
+              "host": ["api", "fitsync", "com"],
+              "path": ["v1", "fitness", "steps"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

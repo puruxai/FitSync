@@ -1,0 +1,87 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "FitSync Enterprise API",
+    "version": "1.4.0",
+    "description": "REST endpoints, Realtime channel events, and AI Coach integration interfaces for FitSync platform."
+  },
+  "servers": [
+    {
+      "url": "https://api.fitsync.com/v1",
+      "description": "Production Server"
+    }
+  ],
+  "paths": {
+    "/auth/login": {
+      "post": {
+        "summary": "User Authentications",
+        "description": "Authenticates user session using email credentials, yielding JWT access refresh tokens.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string", "format": "email" },
+                  "password": { "type": "string", "minLength": 6 }
+                },
+                "required": ["email", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully authenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": { "type": "string" },
+                    "expiresIn": { "type": "integer" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Invalid credentials or request params" }
+        }
+      }
+    },
+    "/fitness/steps": {
+      "post": {
+        "summary": "Log daily steps count",
+        "description": "Logs daily walking metrics and calculates active calories burned adjustments.",
+        "parameters": [
+          {
+            "name": "X-Correlation-ID",
+            "in": "header",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "steps": { "type": "integer", "minimum": 0 },
+                  "caloriesBurned": { "type": "number", "minimum": 0 }
+                },
+                "required": ["steps"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Daily metrics logged successfully" },
+          "401": { "description": "Unauthorized access token missing" }
+        }
+      }
+    }
+  }
+}
