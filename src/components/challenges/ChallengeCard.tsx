@@ -87,7 +87,7 @@ export const ChallengeCard: React.FC<ChallengeCardProps> = ({
             <div>
               <span className="text-[8px] font-black uppercase tracking-wider text-slate-400">Target Goal</span>
               <p className="text-xs font-black text-slate-800 dark:text-slate-150 mt-0.5">
-                {challenge.goal_value.toLocaleString()} {challenge.target_unit}
+                {(challenge.goal_value ?? 0).toLocaleString()} {challenge.target_unit}
               </p>
             </div>
             <div>

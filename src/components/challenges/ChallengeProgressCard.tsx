@@ -67,7 +67,7 @@ export const ChallengeProgressCard: React.FC<ChallengeProgressCardProps> = ({
           <div>
             <span className="text-[8px] font-black uppercase tracking-wider text-slate-400">Your Progress</span>
             <h4 className="text-sm font-black text-slate-800 dark:text-slate-150 mt-0.5">
-              {progressValue.toLocaleString()} / {goalValue.toLocaleString()}
+              {(progressValue ?? 0).toLocaleString()} / {(goalValue ?? 0).toLocaleString()}
             </h4>
             <p className="text-[9px] text-slate-400 font-semibold">{unit}</p>
           </div>

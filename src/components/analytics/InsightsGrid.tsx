@@ -13,7 +13,7 @@ export const InsightsGrid: React.FC<InsightsGridProps> = ({ stats }) => {
   const cards = [
     { label: 'Most Active Day', val: stats.best_workout_day, desc: 'Highest calorie burns logged', icon: 'calendar_month', color: 'text-brand-500' },
     { label: 'Peak Training Hour', val: stats.most_active_time, desc: 'Preferred session start', icon: 'schedule', color: 'text-indigo-500' },
-    { label: 'Average Daily Steps', val: `${stats.average_steps.toLocaleString()} steps`, desc: 'Average walking target', icon: 'footprint', color: 'text-emerald-500' },
+    { label: 'Average Daily Steps', val: `${(stats.average_steps ?? 0).toLocaleString()} steps`, desc: 'Average walking target', icon: 'footprint', color: 'text-emerald-500' },
     { label: 'Consistency Rating', val: `${stats.consistency_score}%`, desc: 'Routine adherence index', icon: 'checklist', color: 'text-pink-500' }
   ];
 

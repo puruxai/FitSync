@@ -41,7 +41,7 @@ export const RewardCard: React.FC<RewardCardProps> = ({
             {reward.title}
           </h4>
           <p className="text-[10px] text-slate-400 font-semibold mt-1">
-            +{reward.reward_points.toLocaleString()} XP Points
+            +{(reward.reward_points ?? 0).toLocaleString()} XP Points
           </p>
         </div>
       </div>

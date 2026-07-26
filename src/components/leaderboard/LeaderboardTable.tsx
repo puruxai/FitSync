@@ -80,7 +80,7 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({
 
                   {/* Score */}
                   <td className="py-4 px-4 text-right font-black text-slate-800 dark:text-slate-150">
-                    {user.score.toLocaleString()}
+                    {(user.score ?? 0).toLocaleString()}
                   </td>
 
                   {/* Trend Badge */}
