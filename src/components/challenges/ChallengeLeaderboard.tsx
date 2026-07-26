@@ -48,7 +48,7 @@ export const ChallengeLeaderboard: React.FC<ChallengeLeaderboardProps> = ({
               </div>
 
               <span className="text-[10px] font-black text-slate-800 dark:text-slate-200">
-                {st.score.toLocaleString()} {unit}
+                {(st.score ?? 0).toLocaleString()} {unit}
               </span>
             </div>
           );

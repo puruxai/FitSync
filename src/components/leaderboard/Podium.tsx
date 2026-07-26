@@ -96,7 +96,7 @@ export const Podium: React.FC<PodiumProps> = ({ topThree }) => {
 
               <div className="text-center mb-2">
                 <div className="text-xs sm:text-base font-black text-slate-850 dark:text-slate-900 line-clamp-1">
-                  {user.score.toLocaleString()}
+                  {(user.score ?? 0).toLocaleString()}
                 </div>
                 <div className="text-[6px] sm:text-[8px] font-black uppercase tracking-wider text-slate-405 dark:text-slate-750">
                   {user.category}

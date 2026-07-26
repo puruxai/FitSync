@@ -35,8 +35,7 @@ jobs:
         run: npx tsc --noEmit
 
       - name: Dependency security scan
-        run: |
-          npm audit --audit-level=critical || echo "High severity advisories detected. Continuing CI."
+        run: npm audit --audit-level=critical
 
       - name: Execute unit tests
         run: npm run test:run

@@ -58,7 +58,7 @@ export const UserRankCard: React.FC<UserRankCardProps> = ({
             Total Score
           </div>
           <div className="text-lg sm:text-2xl font-black text-slate-800 dark:text-slate-150 mt-1">
-            {isRanked ? userScore.score.toLocaleString() : '—'}
+            {isRanked ? (userScore.score ?? 0).toLocaleString() : '—'}
           </div>
         </div>
 
