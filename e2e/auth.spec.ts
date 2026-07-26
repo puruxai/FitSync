@@ -5,8 +5,8 @@ import { test, expect } from '@playwright/test';
 
 test.describe('FitSync E2E Application Flows', () => {
   test('should load the authentication page and show inputs', async ({ page }) => {
-    // Navigate to landing
-    await page.goto('/');
+    // Navigate to login
+    await page.goto('/login');
     
     // Check page title
     await expect(page).toHaveTitle(/FitSync/i);
