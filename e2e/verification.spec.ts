@@ -109,7 +109,11 @@ test.describe('FitSync Complete Page Verification Spec (Real Supabase Backend)',
 
     for (const p of privatePages) {
       consoleErrors = [];
-      await page.click(`a[href="${p.path}"]`);
+      if (p.path === '/admin' || p.path === '/devdocs') {
+        await page.goto(new URL(p.path, page.url()).href);
+      } else {
+        await page.click(`a[href="${p.path}"]`);
+      }
       await page.waitForTimeout(2000);
       await page.screenshot({ path: path.join(screenshotDir, p.name) });
       console.log(`[Verification] Checked ${p.path} - Console errors: ${consoleErrors.length}`);

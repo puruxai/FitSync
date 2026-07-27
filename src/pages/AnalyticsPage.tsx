@@ -15,7 +15,7 @@ import Button from '../components/ui/Button';
 import Skeleton from '../components/ui/Skeleton';
 
 export const AnalyticsPage: React.FC = () => {
-  const { profile } = useAuth();
+  const { profile, isLoading } = useAuth();
   const [showExportModal, setShowExportModal] = useState(false);
 
   // Load custom hooks
@@ -41,11 +41,25 @@ export const AnalyticsPage: React.FC = () => {
     await exportAnalyticsReport(name, format, reportData);
   };
 
-  if (!profile) {
+  if (isLoading) {
     return (
       <div className="p-6 space-y-6 max-w-7xl mx-auto">
         <Skeleton className="h-64 rounded-3xl" />
         <Skeleton className="h-96 rounded-3xl" />
+      </div>
+    );
+  }
+
+  if (!profile) {
+    return (
+      <div className="p-6 text-center space-y-4 max-w-7xl mx-auto">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-12 rounded-3xl max-w-md mx-auto">
+          <span className="material-symbols-outlined text-red-500 text-5xl mb-4">error</span>
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Profile Load Error</h2>
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            Could not load user profile details.
+          </p>
+        </div>
       </div>
     );
   }

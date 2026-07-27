@@ -16,7 +16,7 @@ import Skeleton from '../components/ui/Skeleton';
 import { useGoals } from '../hooks/useGoals';
 
 export const Dashboard: React.FC = () => {
-  const { profile } = useAuth();
+  const { profile, isLoading: authLoading } = useAuth();
   const { 
     liveSteps, liveCalories, liveWater, 
     addLiveWater, addLiveSteps 
@@ -72,12 +72,16 @@ export const Dashboard: React.FC = () => {
   };
 
   useEffect(() => {
-    if (profile) {
-      loadDashboardData();
+    if (!authLoading) {
+      if (profile) {
+        loadDashboardData();
+      } else {
+        setLoading(false);
+      }
     }
-  }, [profile]);
+  }, [profile, authLoading]);
 
-  if (loading || !profile) {
+  if (loading || authLoading) {
     return (
       <div className="p-6 space-y-6">
         <div className="flex justify-between items-center">
@@ -94,6 +98,20 @@ export const Dashboard: React.FC = () => {
           <Skeleton className="h-96 lg:col-span-2" />
           <Skeleton className="h-96" />
         </div>
+      </div>
+    );
+  }
+
+  if (!profile) {
+    return (
+      <div className="p-6 text-center space-y-4">
+        <Card variant="glass" className="p-12 max-w-md mx-auto">
+          <span className="material-symbols-outlined text-red-500 text-5xl mb-4">error</span>
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Profile Load Error</h2>
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            Could not fetch your profile data from the server. Please check your network connection or initialize the database tables.
+          </p>
+        </Card>
       </div>
     );
   }
