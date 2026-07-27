@@ -13,6 +13,7 @@ interface AuthContextType {
   logout: () => Promise<void>;
   refreshProfile: () => Promise<void>;
   updateProfileDetails: (details: Partial<UserProfile>) => Promise<{ success: boolean; error: string | null }>;
+  signInWithGoogle: () => Promise<{ success: boolean; error: string | null }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -87,6 +88,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const signInWithGoogle = async () => {
+    setIsLoading(true);
+    const { error } = await AuthService.signInWithGoogle();
+    setIsLoading(false);
+    if (error) {
+      return { success: false, error: String(error) };
+    }
+    return { success: true, error: null };
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -97,7 +108,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         signup,
         logout,
         refreshProfile,
-        updateProfileDetails
+        updateProfileDetails,
+        signInWithGoogle
       }}
     >
       {children}

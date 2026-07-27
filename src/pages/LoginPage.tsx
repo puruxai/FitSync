@@ -17,7 +17,7 @@ const loginSchema = z.object({
 type LoginFields = z.infer<typeof loginSchema>;
 
 export const LoginPage: React.FC = () => {
-  const { login } = useAuth();
+  const { login, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
@@ -43,9 +43,15 @@ export const LoginPage: React.FC = () => {
     }
   };
 
-  const handleGoogleLogin = () => {
-    toast.success('Google Login simulated. Welcome back!');
-    login('athlete@fitsync.com').then(() => navigate('/dashboard'));
+  const handleGoogleLogin = async () => {
+    try {
+      const { success, error } = await signInWithGoogle();
+      if (!success && error) {
+        toast.error(error || 'Google login failed.');
+      }
+    } catch (err) {
+      toast.error('Google OAuth initialization failed.');
+    }
   };
 
   return (
