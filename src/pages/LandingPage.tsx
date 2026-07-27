@@ -53,28 +53,20 @@ export const LandingPage: React.FC = () => {
           <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight leading-tight text-white uppercase">
             GET HEALTHY BODY<br />
             WITH THE PERFECT<br />
-            EXERCISES 
-            <span className="inline-flex items-center align-middle mx-3 px-3 py-1 rounded-full border border-gray-800 bg-[#151515] text-xs font-normal">
-              <span className="material-symbols-outlined text-[#FF6B00] text-sm mr-1">play_arrow</span>
-              Play
-            </span>
+            EXERCISES
           </h1>
 
           <p className="mt-6 text-sm sm:text-base text-gray-400 font-medium max-w-lg leading-relaxed">
             We are always there to help you to make a healthy body and mind through the power of fitness.
           </p>
 
-          <div className="mt-8 flex items-center gap-6">
+          <div className="mt-8 w-full flex justify-center lg:justify-start">
             <Link
               to="/signup"
-              className="inline-flex items-center justify-center font-bold px-8 py-3.5 rounded-full bg-[#FF5A00] hover:bg-[#FF8C32] text-white active:scale-95 transition-all text-sm"
+              className="inline-flex items-center justify-center font-bold px-10 py-3.5 rounded-full bg-[#FF5A00] hover:bg-[#FF8C32] text-white active:scale-95 transition-all text-sm"
             >
               Get Started
             </Link>
-            <button className="inline-flex items-center justify-center font-semibold text-white hover:text-[#FF8C32] transition-colors gap-2 text-sm">
-              <span className="material-symbols-outlined text-2xl">play_circle</span>
-              Watch Video
-            </button>
           </div>
 
           {/* Stats Bar */}
@@ -324,8 +316,49 @@ export const LandingPage: React.FC = () => {
           </div>
 
           {/* Pricing Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch max-w-5xl mx-auto">
-            {/* Plan 1 */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch max-w-7xl mx-auto">
+            {/* Free Plan */}
+            <div className="bg-[#1D1D1D] border border-gray-900 p-8 rounded-3xl text-left flex flex-col justify-between transition-all hover:scale-102">
+              <div>
+                <span className="text-xxs font-black uppercase text-gray-500 tracking-widest">Free</span>
+                <div className="mt-4 flex items-baseline gap-1">
+                  <span className="text-4xl font-black text-white">$0</span>
+                  <span className="text-xs text-gray-500 font-semibold uppercase">/ month</span>
+                </div>
+                <ul className="mt-8 space-y-3.5 text-xs text-gray-400 font-semibold border-t border-gray-900 pt-6">
+                  <li className="flex items-center gap-3">
+                    <span className="material-symbols-outlined text-[#FF5A00] text-sm">check_circle</span>
+                    Workout Tracking
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <span className="material-symbols-outlined text-[#FF5A00] text-sm">check_circle</span>
+                    Basic Analytics
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <span className="material-symbols-outlined text-[#FF5A00] text-sm">check_circle</span>
+                    BMI Calculator
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <span className="material-symbols-outlined text-[#FF5A00] text-sm">check_circle</span>
+                    Daily Activity Tracking
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <span className="material-symbols-outlined text-[#FF5A00] text-sm">check_circle</span>
+                    Community Access
+                  </li>
+                </ul>
+              </div>
+              <div className="mt-8">
+                <Link
+                  to="/signup"
+                  className="w-full inline-flex items-center justify-center font-bold px-6 py-3 rounded-full border border-gray-800 text-white hover:bg-gray-800 transition-colors text-xs uppercase"
+                >
+                  Choose Plan
+                </Link>
+              </div>
+            </div>
+
+            {/* Paid Plan 1 (Discover) */}
             <div className="bg-[#1D1D1D] border border-gray-900 p-8 rounded-3xl text-left flex flex-col justify-between transition-all hover:scale-102">
               <div>
                 <span className="text-xxs font-black uppercase text-gray-500 tracking-widest">Discover</span>
@@ -355,14 +388,14 @@ export const LandingPage: React.FC = () => {
               <div className="mt-8">
                 <Link
                   to="/signup"
-                  className="w-full inline-flex items-center justify-center font-bold px-6 py-3 rounded-full border border-gray-800 text-white hover:bg-gray-800 transition-colors text-xs uppercase"
+                  className="w-full inline-flex items-center justify-center font-bold px-6 py-3 rounded-full border-2 border-[#FF5A00] text-[#FF5A00] hover:bg-[#FF5A00] hover:text-white transition-colors text-xs uppercase shadow-md shadow-[#FF5A00]/15"
                 >
-                  Choose Plan
+                  Upgrade
                 </Link>
               </div>
             </div>
 
-            {/* Plan 2 (Highlighted Enterprise) */}
+            {/* Paid Plan 2 (Highlighted Enterprise) */}
             <div className="bg-[#FF5A00] p-8 rounded-3xl text-left flex flex-col justify-between transition-all hover:scale-102 shadow-xl shadow-[#FF5A00]/20 relative">
               <div>
                 <span className="text-xxs font-black uppercase text-white/80 tracking-widest">Enterprise</span>
@@ -396,14 +429,14 @@ export const LandingPage: React.FC = () => {
               <div className="mt-8">
                 <Link
                   to="/signup"
-                  className="w-full inline-flex items-center justify-center font-bold px-6 py-3 rounded-full bg-white text-[#FF5A00] hover:bg-white/90 transition-colors text-xs uppercase"
+                  className="w-full inline-flex items-center justify-center font-bold px-6 py-3 rounded-full bg-white text-[#FF5A00] hover:bg-[#FF5A00] hover:text-white transition-colors text-xs uppercase shadow-lg shadow-white/30"
                 >
-                  Choose Plan
+                  Upgrade
                 </Link>
               </div>
             </div>
 
-            {/* Plan 3 */}
+            {/* Paid Plan 3 (Professional) */}
             <div className="bg-[#1D1D1D] border border-gray-900 p-8 rounded-3xl text-left flex flex-col justify-between transition-all hover:scale-102">
               <div>
                 <span className="text-xxs font-black uppercase text-gray-500 tracking-widest">Professional</span>
@@ -433,9 +466,9 @@ export const LandingPage: React.FC = () => {
               <div className="mt-8">
                 <Link
                   to="/signup"
-                  className="w-full inline-flex items-center justify-center font-bold px-6 py-3 rounded-full border border-gray-800 text-white hover:bg-gray-800 transition-colors text-xs uppercase"
+                  className="w-full inline-flex items-center justify-center font-bold px-6 py-3 rounded-full border-2 border-[#FF5A00] text-[#FF5A00] hover:bg-[#FF5A00] hover:text-white transition-colors text-xs uppercase shadow-md shadow-[#FF5A00]/15"
                 >
-                  Choose Plan
+                  Upgrade
                 </Link>
               </div>
             </div>
