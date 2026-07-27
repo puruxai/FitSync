@@ -180,21 +180,6 @@ export const AuthService = {
     }
   },
 
-  // 3. Google OAuth Login
-  async signInWithGoogle(): Promise<{ error: any }> {
-    if (isSupabaseConfigured) {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: window.location.origin + '/dashboard'
-        }
-      });
-      return { error };
-    } else {
-      console.log('Simulating Google login flow...');
-      return { error: null };
-    }
-  },
 
   // 4. Session Persistence & Auto Login
   async getSession(): Promise<UserSession | null> {

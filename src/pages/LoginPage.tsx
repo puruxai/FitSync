@@ -17,7 +17,7 @@ const loginSchema = z.object({
 type LoginFields = z.infer<typeof loginSchema>;
 
 export const LoginPage: React.FC = () => {
-  const { login, signInWithGoogle } = useAuth();
+  const { login } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
@@ -40,17 +40,6 @@ export const LoginPage: React.FC = () => {
       toast.error('An unexpected error occurred.');
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleGoogleLogin = async () => {
-    try {
-      const { success, error } = await signInWithGoogle();
-      if (!success && error) {
-        toast.error(error || 'Google login failed.');
-      }
-    } catch (err) {
-      toast.error('Google OAuth initialization failed.');
     }
   };
 
@@ -103,20 +92,6 @@ export const LoginPage: React.FC = () => {
             </Button>
           </form>
 
-          <div className="relative my-6 flex items-center justify-center">
-            <hr className="w-full border-slate-200 dark:border-slate-800" />
-            <span className="absolute bg-white dark:bg-slate-900 px-3 text-xs font-semibold text-slate-400">Or continue with</span>
-          </div>
-
-          <Button
-            type="button"
-            variant="outline"
-            onClick={handleGoogleLogin}
-            className="w-full justify-center gap-2"
-            leftIcon="google"
-          >
-            Google OAuth
-          </Button>
 
           <p className="text-center text-xs font-semibold text-slate-400 mt-8">
             Don't have an account?{' '}
