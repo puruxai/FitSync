@@ -29,7 +29,7 @@ export const LoginPage: React.FC = () => {
     setLoading(true);
     try {
       // In offline/fallback mode, password doesn't matter. In live mode it goes to Supabase.
-      const { success, error } = await login(data.email);
+      const { success, error } = await login(data.email, data.password);
       if (success) {
         toast.success('Successfully logged in!', { icon: '👋' });
         navigate('/dashboard');
