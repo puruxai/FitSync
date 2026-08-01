@@ -147,6 +147,26 @@ export const MediaService = {
   },
 
   /**
+   * Rename file in metadata
+   */
+  async renameFile(fileId: string, newName: string): Promise<void> {
+    if (isSupabaseConfigured) {
+      const { error } = await supabase
+        .from('media_files')
+        .update({ filename: newName })
+        .eq('id', fileId);
+      if (error) throw error;
+    } else {
+      const list = getFromMockDb<MediaFile>('media_files');
+      const idx = list.findIndex(f => f.id === fileId);
+      if (idx !== -1) {
+        list[idx].filename = newName;
+        saveToMockDb('media_files', list);
+      }
+    }
+  },
+
+  /**
    * Update file sharing permission level
    */
   async updatePermission(fileId: string, level: MediaFile['permission_level']): Promise<void> {

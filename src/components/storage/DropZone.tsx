@@ -1,11 +1,11 @@
 // FitSync Component: DropZone
-// Provides premium drag-and-drop region and handles copy-paste clipboard uploads
+// Provides premium drag-and-drop region, click-to-select multiple files, and copy-paste clipboard uploads
 
 import React, { useState, useEffect, useRef } from 'react';
 import Card from '../ui/Card';
 
 interface DropZoneProps {
-  onUpload: (file: File) => Promise<void>;
+  onUpload: (files: File[]) => Promise<void>;
   loading?: boolean;
   uploadProgress?: number;
 }
@@ -17,6 +17,7 @@ export const DropZone: React.FC<DropZoneProps> = ({
 }) => {
   const [dragActive, setDragActive] = useState(false);
   const dropRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Paste image event listener
   useEffect(() => {
@@ -24,13 +25,17 @@ export const DropZone: React.FC<DropZoneProps> = ({
       const items = e.clipboardData?.items;
       if (!items) return;
 
+      const pastedFiles: File[] = [];
       for (let i = 0; i < items.length; i++) {
         if (items[i].type.indexOf('image') !== -1) {
           const file = items[i].getAsFile();
           if (file) {
-            onUpload(file);
+            pastedFiles.push(file);
           }
         }
+      }
+      if (pastedFiles.length > 0) {
+        onUpload(pastedFiles);
       }
     };
 
@@ -53,8 +58,20 @@ export const DropZone: React.FC<DropZoneProps> = ({
     e.stopPropagation();
     setDragActive(false);
 
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      onUpload(e.dataTransfer.files[0]);
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      onUpload(Array.from(e.dataTransfer.files));
+    }
+  };
+
+  const handleClick = (e: React.MouseEvent) => {
+    // Avoid double clicks on inputs or internal action triggers
+    if (e.target === fileInputRef.current) return;
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      onUpload(Array.from(e.target.files));
     }
   };
 
@@ -65,8 +82,16 @@ export const DropZone: React.FC<DropZoneProps> = ({
       onDragOver={handleDrag}
       onDragLeave={handleDrag}
       onDrop={handleDrop}
-      className="relative select-none"
+      onClick={handleClick}
+      className="relative select-none cursor-pointer"
     >
+      <input
+        ref={fileInputRef}
+        type="file"
+        multiple
+        onChange={handleFileChange}
+        className="hidden"
+      />
       <Card 
         variant="glass" 
         className={`p-10 border-2 border-dashed rounded-3xl flex flex-col items-center justify-center text-center transition-all ${
@@ -80,19 +105,19 @@ export const DropZone: React.FC<DropZoneProps> = ({
         </span>
 
         <p className="text-xs font-bold text-slate-850 dark:text-white leading-tight">
-          Drag and drop files here to upload
+          Drag and drop files here or click to upload
         </p>
         <p className="text-[10px] text-slate-400 mt-1 font-semibold">
-          Supports Photos, Videos, and PDFs. Or simply copy and paste (`Ctrl+V`) screenshots directly!
+          Supports multiple Photos, Videos, and PDFs. Or copy-paste (`Ctrl+V`) clipboard screenshots!
         </p>
 
         {loading && (
-          <div className="w-full mt-6 space-y-2 max-w-xs">
+          <div className="w-full mt-6 space-y-2 max-w-xs" onClick={(e) => e.stopPropagation()}>
             <div className="flex justify-between items-center text-[10px] font-black text-slate-400">
-              <span>Uploading File...</span>
+              <span>Uploading Files...</span>
               <span>{uploadProgress}%</span>
             </div>
-            <div className="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
+            <div className="w-full bg-slate-100 dark:bg-slate-850 h-1.5 rounded-full overflow-hidden">
               <div 
                 className="bg-brand-500 h-full transition-all duration-300"
                 style={{ width: `${uploadProgress}%` }}

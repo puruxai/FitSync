@@ -1,5 +1,5 @@
 // FitSync Component: AIChat
-// Implements streaming AI dialogue interface with typing indicators, thread selectors, and history exports
+// Implements streaming AI dialogue interface with typing indicators, thread selectors, history exports, quick actions, and HTML5 Web Speech recognition
 
 import React, { useState, useRef, useEffect } from 'react';
 import Button from '../ui/Button';
@@ -32,7 +32,15 @@ export const AIChat: React.FC<AIChatProps> = ({
   const [inputText, setInputText] = useState('');
   const [newTitle, setNewTitle] = useState('');
   const [sending, setSending] = useState(false);
+  const [isListening, setIsListening] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  const QUICK_ACTIONS = [
+    { label: '🏋️ HIIT Routine', text: 'Generate a 20-min HIIT Routine for fat burning.' },
+    { label: '🥗 High-Protein Diet', text: 'Suggest a high-protein diet plan targeting 1800 calories.' },
+    { label: '📈 Progress Prediction', text: 'Predict my fitness progress and BMI trends for next month.' },
+    { label: '💧 Hydration Check', text: 'Give me hydration tips for endurance runs.' }
+  ];
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -79,14 +87,52 @@ export const AIChat: React.FC<AIChatProps> = ({
     toast.success('Chat history downloaded!');
   };
 
+  const startListening = () => {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      toast.error('Voice recognition is not supported in this browser.');
+      return;
+    }
+
+    try {
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'en-US';
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+
+      recognition.onstart = () => {
+        setIsListening(true);
+        toast.success('Listening... Speak into your mic.');
+      };
+
+      recognition.onerror = () => {
+        toast.error('Could not capture audio.');
+        setIsListening(false);
+      };
+
+      recognition.onend = () => {
+        setIsListening(false);
+      };
+
+      recognition.onresult = (event: any) => {
+        const speechToText = event.results[0][0].transcript;
+        setInputText(prev => (prev ? prev + ' ' + speechToText : speechToText));
+      };
+
+      recognition.start();
+    } catch (e: any) {
+      toast.error('Speech recognition failed to initialize.');
+    }
+  };
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 h-[72vh] border border-slate-200/50 dark:border-slate-800/40 rounded-3xl overflow-hidden bg-white/30 dark:bg-slate-900/20 backdrop-blur-md">
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 h-[72vh] border border-slate-900 rounded-3xl overflow-hidden bg-[#121212] backdrop-blur-md">
       
       {/* Sidebar - Threads */}
-      <div className="md:col-span-1 border-r border-slate-100 dark:border-slate-800/40 p-4 flex flex-col justify-between bg-slate-50/50 dark:bg-slate-900/40">
+      <div className="md:col-span-1 border-r border-slate-900 p-4 flex flex-col justify-between bg-slate-950">
         <div className="space-y-4 text-left">
           <div className="flex justify-between items-center select-none">
-            <h3 className="text-xs font-black uppercase text-slate-400 tracking-wider">Sessions</h3>
+            <h3 className="text-xs font-black uppercase text-slate-500 tracking-wider">Sessions</h3>
           </div>
 
           <form onSubmit={handleCreateThread} className="flex gap-2">
@@ -94,9 +140,9 @@ export const AIChat: React.FC<AIChatProps> = ({
               placeholder="Start new topic..."
               value={newTitle}
               onChange={(e) => setNewTitle(e.target.value)}
-              className="flex-1 px-3 py-1.5 text-[10px] font-semibold bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/30 rounded-xl focus:outline-none dark:text-white"
+              className="flex-1 px-3 py-1.5 text-[10px] font-semibold bg-slate-900 border border-slate-800 rounded-xl focus:outline-none text-white"
             />
-            <button type="submit" className="p-1.5 bg-brand-500 hover:bg-brand-600 text-white rounded-xl flex items-center justify-center cursor-pointer">
+            <button type="submit" className="p-1.5 bg-brand-500 hover:bg-brand-650 text-slate-950 rounded-xl flex items-center justify-center cursor-pointer">
               <span className="material-symbols-outlined text-sm font-black">add</span>
             </button>
           </form>
@@ -108,8 +154,8 @@ export const AIChat: React.FC<AIChatProps> = ({
                 onClick={() => onSelectConv(c)}
                 className={`w-full text-left px-3.5 py-2.5 rounded-2xl text-[10px] font-bold block truncate transition-all cursor-pointer ${
                   activeConv?.id === c.id
-                    ? 'bg-brand-500/10 text-brand-650 dark:text-brand-400 border border-brand-500/20'
-                    : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800/30 border border-transparent'
+                    ? 'bg-brand-500/10 text-brand-400 border border-brand-500/20'
+                    : 'text-slate-400 hover:bg-slate-900 border border-transparent'
                 }`}
               >
                 {c.title}
@@ -119,7 +165,7 @@ export const AIChat: React.FC<AIChatProps> = ({
         </div>
 
         {activeConv && (
-          <div className="flex gap-2 select-none border-t border-slate-100 dark:border-slate-800/30 pt-3">
+          <div className="flex gap-2 select-none border-t border-slate-900 pt-3">
             <Button size="sm" variant="outline" onClick={handleExport} className="flex-1" leftIcon="download">
               Export
             </Button>
@@ -131,10 +177,19 @@ export const AIChat: React.FC<AIChatProps> = ({
       </div>
 
       {/* Main Chat log */}
-      <div className="md:col-span-3 flex flex-col justify-between h-full bg-white/10 dark:bg-slate-900/10">
+      <div className="md:col-span-3 flex flex-col justify-between h-full bg-slate-900/30">
         
         {/* Messages list */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          {messages.length === 0 && !streamingText && (
+            <div className="h-full flex flex-col items-center justify-center text-center space-y-4 select-none opacity-60">
+              <span className="material-symbols-outlined text-5xl text-brand-400">smart_toy</span>
+              <p className="text-xs text-slate-400 font-semibold max-w-sm">
+                Welcome to your FitSync Coaching Session! Pick a quick action below or type a query to begin.
+              </p>
+            </div>
+          )}
+
           {messages.map(m => (
             <div
               key={m.id}
@@ -143,11 +198,10 @@ export const AIChat: React.FC<AIChatProps> = ({
               <div
                 className={`max-w-[75%] px-4 py-3 rounded-[1.4rem] text-xs font-semibold leading-relaxed text-left shadow-sm ${
                   m.role === 'user'
-                    ? 'bg-brand-500 text-white rounded-tr-none'
-                    : 'bg-white dark:bg-slate-850 text-slate-800 dark:text-slate-200 rounded-tl-none border border-slate-100 dark:border-slate-800/20'
+                    ? 'bg-brand-500 text-slate-950 rounded-tr-none'
+                    : 'bg-slate-950 text-slate-200 rounded-tl-none border border-slate-900'
                 }`}
               >
-                {/* Simplified markdown formatter helper */}
                 <div className="whitespace-pre-line space-y-2">
                   {m.content}
                 </div>
@@ -158,7 +212,7 @@ export const AIChat: React.FC<AIChatProps> = ({
           {/* Streaming builder bubble */}
           {streamingText && (
             <div className="flex justify-start">
-              <div className="max-w-[75%] px-4 py-3 rounded-[1.4rem] rounded-tl-none text-xs font-semibold leading-relaxed text-left bg-white dark:bg-slate-850 text-slate-800 dark:text-slate-200 border border-slate-100 dark:border-slate-800/20 shadow-sm">
+              <div className="max-w-[75%] px-4 py-3 rounded-[1.4rem] rounded-tl-none text-xs font-semibold leading-relaxed text-left bg-slate-950 text-slate-200 border border-slate-900 shadow-sm">
                 <div className="whitespace-pre-line">{streamingText}</div>
               </div>
             </div>
@@ -167,15 +221,41 @@ export const AIChat: React.FC<AIChatProps> = ({
           <div ref={bottomRef} />
         </div>
 
+        {/* Quick Actions */}
+        <div className="px-4 py-2.5 flex flex-wrap gap-2 border-t border-slate-900 bg-slate-950/30 overflow-x-auto">
+          {QUICK_ACTIONS.map((qa, index) => (
+            <button
+              key={index}
+              type="button"
+              onClick={() => setInputText(qa.text)}
+              className="px-2.5 py-1 text-[9px] font-black uppercase tracking-wider bg-slate-950 border border-brand-500/20 text-brand-400 rounded-full hover:bg-brand-500 hover:text-slate-950 transition-all cursor-pointer whitespace-nowrap"
+            >
+              {qa.label}
+            </button>
+          ))}
+        </div>
+
         {/* Input box */}
-        <form onSubmit={handleSend} className="p-4 border-t border-slate-100 dark:border-slate-800/40 flex gap-3 bg-white/20 dark:bg-slate-900/40">
+        <form onSubmit={handleSend} className="p-4 border-t border-slate-900 flex gap-3 bg-slate-950">
           <input
-            placeholder="Ask AI Coach a question, e.g., 'Correct my daily steps goal to 12000'..."
+            placeholder="Ask AI Coach a question..."
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
             disabled={sending}
-            className="flex-1 px-4 py-3 text-xs font-semibold bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/30 rounded-2xl focus:outline-none dark:text-white focus:ring-2 focus:ring-brand-500"
+            className="flex-1 px-4 py-3 text-xs font-semibold bg-slate-900 border border-slate-800 rounded-2xl focus:outline-none text-white focus:ring-1 focus:ring-brand-500"
           />
+          <button
+            type="button"
+            onClick={startListening}
+            className={`p-2.5 rounded-2xl flex items-center justify-center transition-all border cursor-pointer ${
+              isListening
+                ? 'bg-red-500/20 border-red-500/50 text-red-500 animate-pulse'
+                : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white'
+            }`}
+            title="Speech-to-Text Input"
+          >
+            <span className="material-symbols-outlined text-sm">mic</span>
+          </button>
           <Button type="submit" disabled={sending} isLoading={sending} leftIcon="send">
             Ask
           </Button>

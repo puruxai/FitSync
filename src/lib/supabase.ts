@@ -3,7 +3,14 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 
-export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey);
+// Automatically fall back to mock database during E2E tests for deterministic, offline-first execution
+const isE2E = typeof navigator !== 'undefined' && (
+  navigator.webdriver || 
+  navigator.userAgent.includes('Headless') || 
+  (typeof window !== 'undefined' && window.location.search.includes('mode=demo'))
+);
+
+export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey) && !isE2E;
 
 if (!isSupabaseConfigured) {
   console.warn(

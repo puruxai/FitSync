@@ -25,6 +25,98 @@ export const FitnessService = {
    */
   async getFitnessLogs(userId: string): Promise<FitnessLog[]> {
     try {
+      if (!isSupabaseConfigured) {
+        const stepLogsCheck = getFromMockDb<any>('step_logs').filter(l => l.profile_id === userId);
+        if (stepLogsCheck.length === 0) {
+          const seededSteps = [];
+          const seededCalories = [];
+          const seededWater = [];
+          const seededWeight = [];
+          const seededWorkouts = [];
+
+          for (let i = 7; i >= 0; i--) {
+            const date = new Date();
+            date.setDate(date.getDate() - i);
+            const dateStr = date.toISOString().split('T')[0];
+
+            // Steps
+            const steps = Math.floor(6000 + Math.random() * 6000);
+            const cBurned = Math.floor(steps * 0.04);
+            seededSteps.push({
+              id: `step-seed-${userId}-${dateStr}`,
+              profile_id: userId,
+              steps,
+              calories_burned: cBurned,
+              date: dateStr,
+              created_at: date.toISOString()
+            });
+
+            // Calorie logs
+            seededCalories.push({
+              id: `cal-seed-${userId}-${dateStr}`,
+              profile_id: userId,
+              calories_burned: cBurned,
+              date: dateStr,
+              created_at: date.toISOString()
+            });
+
+            // Water
+            seededWater.push({
+              id: `water-seed-${userId}-${dateStr}`,
+              profile_id: userId,
+              amount_ml: Math.floor(1500 + Math.random() * 1500),
+              date: dateStr,
+              created_at: date.toISOString()
+            });
+
+            // Weight
+            seededWeight.push({
+              id: `weight-seed-${userId}-${dateStr}`,
+              profile_id: userId,
+              weight_kg: 78 - (i * 0.1),
+              bmi: 24.1,
+              date: dateStr,
+              created_at: date.toISOString()
+            });
+
+            // Workouts
+            if (i % 2 === 0) {
+              seededWorkouts.push({
+                id: `wk-seed-${userId}-${dateStr}`,
+                profile_id: userId,
+                user_id: userId,
+                name: i % 4 === 0 ? 'Full Body Gym Session' : 'Outdoor Trail Run',
+                category: i % 4 === 0 ? 'gym' : 'cardio',
+                duration_minutes: i % 4 === 0 ? 60 : 45,
+                calories_burned: i % 4 === 0 ? 450 : 420,
+                date: dateStr,
+                created_at: date.toISOString()
+              });
+            }
+          }
+
+          const allSteps = getFromMockDb<any>('step_logs');
+          allSteps.push(...seededSteps);
+          saveToMockDb('step_logs', allSteps);
+
+          const allCalories = getFromMockDb<any>('calorie_logs');
+          allCalories.push(...seededCalories);
+          saveToMockDb('calorie_logs', allCalories);
+
+          const allWater = getFromMockDb<any>('water_logs');
+          allWater.push(...seededWater);
+          saveToMockDb('water_logs', allWater);
+
+          const allWeight = getFromMockDb<any>('weight_logs');
+          allWeight.push(...seededWeight);
+          saveToMockDb('weight_logs', allWeight);
+
+          const allWorkouts = getFromMockDb<any>('workout_history');
+          allWorkouts.push(...seededWorkouts);
+          saveToMockDb('workout_history', allWorkouts);
+        }
+      }
+
       const stepLogs = await StepService.getStepLogs(userId, 'year');
       const waterLogs = await WaterService.getWaterLogs(userId);
       const workoutLogs = await WorkoutService.getWorkoutHistory(userId);
@@ -89,7 +181,7 @@ export const FitnessService = {
         calories_burned: log.calories
       })) as FitnessLog[];
 
-      return result.sort((a, b) => b.date.localeCompare(a.date));
+      return result.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
     } catch (err) {
       console.error('Error consolidating daily fitness logs:', err);
       return [];

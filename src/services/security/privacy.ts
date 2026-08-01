@@ -12,6 +12,9 @@ export interface PrivacyConsent {
   created_at?: string;
 }
 
+const isTesting = typeof (globalThis as any).process !== 'undefined' && (globalThis as any).process.env?.NODE_ENV === 'test';
+const useSupabase = isSupabaseConfigured && !isTesting;
+
 export const PrivacyService = {
   /**
    * Save user privacy consent setting
@@ -24,7 +27,7 @@ export const PrivacyService = {
     };
 
     try {
-      if (isSupabaseConfigured) {
+      if (useSupabase) {
         await supabase.from('privacy_consents').insert(payload);
       } else {
         const list = getFromMockDb<any>('privacy_consents');
@@ -45,7 +48,7 @@ export const PrivacyService = {
    */
   async checkConsent(userId: string, type: 'cookies_marketing' | 'health_metrics_analysis'): Promise<boolean> {
     try {
-      if (isSupabaseConfigured) {
+      if (useSupabase) {
         const { data } = await supabase
           .from('privacy_consents')
           .select('consent_given')

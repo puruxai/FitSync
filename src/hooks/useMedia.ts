@@ -40,6 +40,13 @@ export const useMedia = (userId?: string, activeFolderId?: string) => {
     setFiles(prev => prev.filter(f => f.id !== fileId));
   };
 
+  const renameFile = async (fileId: string, newName: string) => {
+    await MediaService.renameFile(fileId, newName);
+    setFiles(prev => 
+      prev.map(f => f.id === fileId ? { ...f, filename: newName } : f)
+    );
+  };
+
   const updatePermission = async (fileId: string, level: MediaFile['permission_level']) => {
     await MediaService.updatePermission(fileId, level);
     setFiles(prev => 
@@ -53,6 +60,7 @@ export const useMedia = (userId?: string, activeFolderId?: string) => {
     loading,
     createFolder,
     deleteFile,
+    renameFile,
     updatePermission,
     refetch: fetchMedia
   };

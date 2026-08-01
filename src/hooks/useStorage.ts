@@ -18,31 +18,24 @@ export const useStorage = (userId?: string) => {
     if (!userId) return;
     try {
       setLoading(true);
+      let bytesUsed = 0;
       if (isSupabaseConfigured) {
         const { data } = await supabase
-          .from('storage_usage')
-          .select('bytes_used, quota_bytes')
-          .eq('profile_id', userId)
-          .maybeSingle();
-
+          .from('media_files')
+          .select('file_size')
+          .eq('user_id', userId);
         if (data) {
-          setUsage({
-            bytesUsed: Number(data.bytes_used),
-            quotaBytes: Number(data.quota_bytes)
-          });
+          bytesUsed = data.reduce((sum, f) => sum + Number(f.file_size || 0), 0);
         }
       } else {
-        const list = getFromMockDb<any>('storage_usage');
-        const found = list.find(u => u.profile_id === userId);
-        if (found) {
-          setUsage({
-            bytesUsed: Number(found.bytes_used || 245000000),
-            quotaBytes: Number(found.quota_bytes || 1073741824)
-          });
-        } else {
-          setUsage({ bytesUsed: 180000000, quotaBytes: 1073741824 });
-        }
+        const list = getFromMockDb<any>('media_files');
+        const userFiles = list.filter(f => f.user_id === userId);
+        bytesUsed = userFiles.reduce((sum, f) => sum + Number(f.file_size || 0), 0);
       }
+      setUsage({
+        bytesUsed,
+        quotaBytes: 1073741824
+      });
     } catch (err) {
       console.error('Failed to load storage usage:', err);
     } finally {

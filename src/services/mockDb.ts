@@ -124,9 +124,19 @@ const getPastDateStr = (daysAgo: number): string => {
   return d.toISOString().split('T')[0];
 };
 
+// Safe global localStorage checker and fallback object
+const memoryDb: Record<string, string> = {};
+const storage = (typeof window !== 'undefined' && window.localStorage) ? window.localStorage : {
+  getItem: (key: string) => memoryDb[key] || null,
+  setItem: (key: string, value: string) => { memoryDb[key] = value; },
+  removeItem: (key: string) => { delete memoryDb[key]; },
+  clear: () => { Object.keys(memoryDb).forEach(k => delete memoryDb[k]); }
+};
+const localStorage = storage;
+
 // Setup initial state helper
 export const initMockDatabase = () => {
-  if (!localStorage.getItem('fs_initialized')) {
+  if (!storage.getItem('fs_initialized')) {
     localStorage.setItem('fs_workouts', JSON.stringify(DEFAULT_WORKOUTS));
     localStorage.setItem('fs_profiles', JSON.stringify(DEFAULT_PROFILES));
     

@@ -126,7 +126,7 @@ export const WorkoutHistoryService = {
       const list = getFromMockDb<WorkoutHistoryItem>('workout_history');
       return list
         .filter(h => h.user_id === userId)
-        .sort((a, b) => b.logged_date.localeCompare(a.logged_date));
+        .sort((a, b) => (b.logged_date || '').localeCompare(a.logged_date || ''));
     }
   }
 };

@@ -155,13 +155,22 @@ export const Dashboard: React.FC = () => {
     setSleepHours(prev => Math.min(12, prev + 0.5));
   };
 
-  // Mock Activity Heatmap data (7 columns representing days of week, 4 rows representing past weeks)
-  const heatmapGrid = [
-    [0.1, 0.8, 0.4, 0.2, 0.9, 0.1, 0.5],
-    [0.5, 0.2, 0.7, 0.9, 0.3, 0.6, 0.1],
-    [0.8, 0.9, 0.2, 0.5, 0.1, 0.4, 0.8],
-    [0.3, 0.5, 0.8, 0.1, 0.9, 0.9, 0.6]
-  ];
+  // Calculate dynamic Activity Heatmap values based on actual logs for the past 28 days
+  const heatmapGrid = Array.from({ length: 4 }, (_, wIdx) => {
+    return Array.from({ length: 7 }, (_, dIdx) => {
+      const dayOffset = (3 - wIdx) * 7 + (6 - dIdx);
+      const targetDate = new Date();
+      targetDate.setDate(targetDate.getDate() - dayOffset);
+      const targetDateStr = targetDate.toISOString().split('T')[0];
+      const logForDay = fitnessHistory.find((l: any) => l.date === targetDateStr);
+      if (!logForDay) return 0;
+      
+      const stepsRatio = (logForDay.steps || 0) / 10000;
+      const workoutRatio = (logForDay.workout_minutes || 0) / 45;
+      const intensity = Math.min(1.0, (stepsRatio + workoutRatio) / 2);
+      return parseFloat(intensity.toFixed(2));
+    });
+  });
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 space-y-8 max-w-7xl mx-auto pb-24 lg:pb-8 text-left">

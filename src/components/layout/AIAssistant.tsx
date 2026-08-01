@@ -4,6 +4,7 @@ import { AIProviderService } from '../../services/ai/aiProviderService';
 import type { AIMessage } from '../../services/ai/aiProviderService';
 import Button from '../ui/Button';
 import Input from '../ui/Input';
+import toast from 'react-hot-toast';
 
 export const AIAssistant: React.FC = () => {
   const { profile } = useAuth();
@@ -109,19 +110,45 @@ export const AIAssistant: React.FC = () => {
   };
 
   const handleMicClick = () => {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      toast.error('Voice input is not supported in this browser.');
+      return;
+    }
+
     if (isRecording) {
       setIsRecording(false);
-      // Mock Speech to Text transcription
-      const phrases = [
-        'Give me a bodyweight circuit plan',
-        'Suggest a high protein breakfast menu',
-        'What precautions should I take for squats?',
-        'How many steps should I walk daily?'
-      ];
-      const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
-      setInputValue(randomPhrase);
-    } else {
-      setIsRecording(true);
+      return;
+    }
+
+    try {
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'en-US';
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+
+      recognition.onstart = () => {
+        setIsRecording(true);
+        toast.success('Listening...');
+      };
+
+      recognition.onerror = () => {
+        toast.error('Voice input failed.');
+        setIsRecording(false);
+      };
+
+      recognition.onend = () => {
+        setIsRecording(false);
+      };
+
+      recognition.onresult = (event: any) => {
+        const speechToText = event.results[0][0].transcript;
+        setInputValue(prev => (prev ? prev + ' ' + speechToText : speechToText));
+      };
+
+      recognition.start();
+    } catch (e) {
+      setIsRecording(false);
     }
   };
 
