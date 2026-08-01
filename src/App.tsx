@@ -12,6 +12,8 @@ import { RealtimeProvider } from './contexts/RealtimeContext';
 import Navbar from './components/layout/Navbar';
 import Sidebar from './components/layout/Sidebar';
 import BottomNav from './components/layout/BottomNav';
+import MusicPlayer from './components/layout/MusicPlayer';
+import AIAssistant from './components/layout/AIAssistant';
 
 // Pages - Dynamic Lazy Loading
 const LandingPage = lazy(() => import('./pages/LandingPage'));
@@ -142,9 +144,10 @@ export const App: React.FC = () => {
                       </Route>
                     </Route>
 
-                    {/* 404 Route */}
                     <Route path="*" element={<NotFound />} />
                   </Routes>
+                  <MusicPlayer />
+                  <AIAssistant />
                 </Suspense>
               </ErrorBoundary>
             </Router>

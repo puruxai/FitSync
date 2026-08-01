@@ -1,32 +1,32 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brand-50: #fff4eb;
-  --color-brand-100: #ffe6d1;
-  --color-brand-200: #ffc9a3;
-  --color-brand-300: #ffa166;
-  --color-brand-400: #ff7a00;
-  --color-brand-500: #ff7a00; /* Accent Orange */
-  --color-brand-600: #ff9b33; /* Accent Hover */
-  --color-brand-700: #e05e00;
-  --color-brand-800: #bd4700;
-  --color-brand-900: #963600;
-  --color-brand-950: #421400;
+  --color-brand-50: #ebffeb;
+  --color-brand-100: #d1ffd1;
+  --color-brand-200: #a3ffa3;
+  --color-brand-300: #66ffa1;
+  --color-brand-400: #39ff14; /* Accent Neon Green */
+  --color-brand-500: #39ff14;
+  --color-brand-600: #2eff00; /* Accent Hover */
+  --color-brand-700: #24cc00;
+  --color-brand-800: #1ba000;
+  --color-brand-900: #127000;
+  --color-brand-950: #0a4000;
 
-  --color-slate-50: #07090F;
-  --color-slate-100: #101522;
-  --color-slate-200: #171D2C;
-  --color-slate-300: #222B3F;
-  --color-slate-400: #9CA3AF;
-  --color-slate-500: #9CA3AF;
+  --color-slate-50: #050505; /* Deep Matte Black */
+  --color-slate-100: #0c0c0c;
+  --color-slate-200: #121212; /* Rich Card Black */
+  --color-slate-300: #1a1a1a;
+  --color-slate-400: #888888;
+  --color-slate-500: #888888;
   --color-slate-600: #FFFFFF;
   --color-slate-700: #FFFFFF;
   --color-slate-800: #FFFFFF;
-  --color-slate-850: #101522;
-  --color-slate-900: #101522;
-  --color-slate-950: #07090F;
+  --color-slate-850: #0c0c0c;
+  --color-slate-900: #0c0c0c;
+  --color-slate-950: #050505;
 
-  --color-white: #171D2C;
+  --color-white: #121212;
   
   --font-sans: "Poppins", "Inter", system-ui, -apple-system, sans-serif;
 }
@@ -36,12 +36,12 @@
     @apply h-full m-0 p-0 overflow-x-hidden;
     font-family: var(--font-sans);
     scroll-behavior: smooth;
-    background-color: #07090F !important;
+    background-color: #050505 !important;
     color: #FFFFFF !important;
   }
   
   body {
-    background-color: #07090F !important;
+    background-color: #050505 !important;
     color: #FFFFFF !important;
   }
   
@@ -63,36 +63,53 @@
 
   /* Glassmorphism custom classes */
   .glass-panel {
-    @apply bg-[#101522]/80 backdrop-blur-md border border-[#171D2C];
+    @apply bg-[#0c0c0c]/80 backdrop-blur-md border border-[#1a1a1a];
   }
 
   /* Glass card styling */
   .glass-card {
-    @apply bg-[#171D2C]/90 backdrop-blur-xl border border-[#222B3F] shadow-2xl;
+    @apply bg-[#121212]/90 backdrop-blur-xl border border-[#1a1a1a] shadow-2xl;
+  }
+
+  /* Neon Glowing border utilities */
+  .neon-glow-border {
+    border: 1px solid rgba(57, 255, 20, 0.25);
+    box-shadow: 0 0 15px rgba(57, 255, 20, 0.05);
+  }
+
+  .neon-glow-border:hover {
+    border-color: rgba(57, 255, 20, 0.6);
+    box-shadow: 0 0 20px rgba(57, 255, 20, 0.15);
+  }
+
+  /* Neon text utility */
+  .text-neon {
+    color: #39ff14;
+    text-shadow: 0 0 8px rgba(57, 255, 20, 0.4);
   }
 
   /* Global input field overrides for visibility & premium layout styling */
   input, textarea, select {
     color: #FFFFFF !important;
-    background-color: #131722 !important;
-    border: 1px solid #2B3245 !important;
-    caret-color: #FF6B00 !important;
+    background-color: #0c0c0c !important;
+    border: 1px solid #1a1a1a !important;
+    caret-color: #39ff14 !important;
   }
   
   input::placeholder, textarea::placeholder {
-    color: #9CA3AF !important;
+    color: #888888 !important;
     opacity: 1 !important;
   }
 
   input:focus, textarea:focus, select:focus {
-    border-color: #FF6B00 !important;
+    border-color: #39ff14 !important;
     outline: none !important;
-    box-shadow: 0 0 0 1px #FF6B00 !important;
+    box-shadow: 0 0 8px rgba(57, 255, 20, 0.25) !important;
   }
 
   /* Selection styling */
   ::selection {
-    background-color: rgba(255, 107, 0, 0.35) !important;
+    background-color: rgba(57, 255, 20, 0.25) !important;
     color: #FFFFFF !important;
   }
 }
@@ -103,13 +120,12 @@
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background-color: #07090F;
+  background-color: #050505;
 }
 ::-webkit-scrollbar-thumb {
-  background-color: #171D2C;
+  background-color: #121212;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #ff7a00;
+  background-color: #39ff14;
 }
-
